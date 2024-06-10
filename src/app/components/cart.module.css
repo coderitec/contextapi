@@ -1,0 +1,19 @@
+.table{
+    border-collapse: collapse;
+    width: 80%;
+    margin: auto;
+}
+
+.table tr{
+    border: 5px double rgb(228, 227, 227);
+}
+
+.table td, .table th{
+    padding: 1rem;
+    text-align: center;
+    text-transform: uppercase;
+}
+.table tfoot{
+    background-color: rgb(228, 227, 227);
+    color: rgb(0, 4, 12);
+}
