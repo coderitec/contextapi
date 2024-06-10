@@ -1,36 +1,159 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# React Shopping Cart Application
 
-## Getting Started
+This is a simple shopping cart application built with React. It demonstrates the use of `useContext`, `useEffect`, `useState`, and `localStorage` for state management and persistence.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- Add items to the cart
+- Remove items from the cart
+- Persist cart items in `localStorage`
+- Display total items and total price
+
+## Table of Contents
+
+- [Installation](#installation)
+- [Usage](#usage)
+- [Components](#components)
+- [Providers](#providers)
+- [Hooks](#hooks)
+- [Local Storage](#local-storage)
+- [Contributing](#contributing)
+- [License](#license)
+
+## [Installation](#installation)
+
+1. Clone the repository
+
+   ```
+   git clone https://github.com/coderitec/contextapi.git
+   ```
+
+2. Navigate to the project directory
+
+   ```
+   cd contextapi
+   ```
+
+## [Usage](#usage)
+
+1. Start the development server
+
+   ```
+   npm run dev
+   ```
+
+2. Open your browser and go to `http://localhost:3000`
+
+## [Components](#components)
+
+### AddCart
+
+Displays the input element and the button to add to cart
+
+### Cart
+
+Displays the items in the cart, along with the total number of items and the total price. Allows users to remove items from the cart.
+
+### Cards
+
+Each content of the item displayed on the home page
+
+### Navbar
+
+Displays the navigation menu
+
+### [Providers](#providers)
+
+Contains the hoooks managed globally using context api
+
+```
+"use client"
+import { stringify } from 'postcss';
+import React, { createContext, useEffect, useState } from 'react'
+
+const SideBarContext = createContext()
+
+const SidebarProvider = ({children}) => {
+
+  const [val, setVal] = useState(() => {
+    const savedVal = localStorage.getItem('Item num')
+    return savedVal !== null ? parseInt(savedVal, 10) : 0
+  });
+    const [navOpen, setNavOpen] = useState(false)
+    const [inputVal, setInputVal] = useState(1)
+    const [cartItems, setCartItems] = useState(() => {
+      const savedCart = localStorage.getItem('Saved Cart')
+      return savedCart !== null ? JSON.parse(savedCart) : []
+    });
+    const [openCart, setOpenCart] = useState(false)
+
+
+    useEffect(() => {
+      localStorage.setItem('Item num', val)
+    },[val])
+
+    useEffect(() => {
+      localStorage.setItem('Saved Cart', JSON.stringify(cartItems))
+    },[cartItems])
+
+  return (
+    <div>
+        <SideBarContext.Provider value={{navOpen,setNavOpen,val,setVal,inputVal, setInputVal, openCart, setOpenCart,cartItems, setCartItems}}>
+        {children}
+        </SideBarContext.Provider>
+    </div>
+  )
+}
+
+export  {SideBarContext, SidebarProvider}
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Hooks
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+### useState
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+Used to manage local state within components, such as the list of products.
 
-## Learn More
+### useEffect
 
-To learn more about Next.js, take a look at the following resources:
+Used to perform side effects, such as loading the cart items from `localStorage` when the component mounts.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### useContext
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+Used to access the cart state and dispatch methods from `CartContext`.
 
-## Deploy on Vercel
+## Local Storage
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Saving Cart to Local Storage
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+The cart items are saved to `localStorage` whenever the cart state changes.
+
+```
+    useEffect(() => {
+      localStorage.setItem('Item num', val)
+    },[val])
+
+    useEffect(() => {
+      localStorage.setItem('Saved Cart', JSON.stringify(cartItems))
+    },[cartItems])
+
+```
+
+### Loading Cart from Local Storage
+
+The cart items are loaded from `localStorage` when the application initializes.
+
+```
+  const [cartItems, setCartItems] = useState(() => {
+      const savedCart = localStorage.getItem('Saved Cart')
+      return savedCart !== null ? JSON.parse(savedCart) : []
+    });
+```
+
+## Contributing
+
+Contributions are welcome! Please open an issue or submit a pull request.
+
+## License
+
+This project is licensed under the MIT License.
